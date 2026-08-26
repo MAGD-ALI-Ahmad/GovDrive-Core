@@ -52,6 +52,7 @@ const applicationSchema = new mongoose.Schema(
 //   }
 //   next();
 // });
-
+applicationSchema.index({ applicantUserId: 1 });
+applicationSchema.index({ applicationStatus: 1 });
 const Application = mongoose.model("Application", applicationSchema);
 module.exports = Application;

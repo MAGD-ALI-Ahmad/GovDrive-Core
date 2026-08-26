@@ -40,7 +40,8 @@ const testAppointmentSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-
+testAppointmentSchema.index({ applicationId: 1 });
+testAppointmentSchema.index({ applicationId: 1, testType: 1 }); // فهرس مركب ممتاز للبحث عن فحص معين لطلب محدد
 const TestAppointment = mongoose.model(
   "TestAppointment",
   testAppointmentSchema,
