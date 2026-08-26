@@ -4,11 +4,19 @@ const TestAppointmentController = require("../controllers/TestAppointment.contro
 const auth = require("../middlewares/auth");
 const asyncHandler = require("../utils/asyncHandler");
 const roleMiddleware = require("../middlewares/role");
-
+const {
+  createAppointmentValidation,
+  appointmentIdParamValidation,
+  updateResultValidation,
+} = require("../validations/appointment.validator");
 // 1. العميل يطلب حجز موعد (Pending)
 router.post(
   "/request",
-  [auth, roleMiddleware(["customer", "admin", "employee"])],
+  [
+    auth,
+    roleMiddleware(["customer", "admin", "employee"]),
+    createAppointmentValidation,
+  ],
   asyncHandler(TestAppointmentController.requestAppointment),
 );
 
@@ -38,21 +46,21 @@ router.get(
   "/employee/all",
   auth,
   roleMiddleware(["Employee", "Admin"]),
-  testAppointmentController.getAppointmentsForEmployee,
+  TestAppointmentController.getAppointmentsForEmployee,
 );
 
 // إلغاء موعد (للعميل أو الموظف بشروط Pending)
 router.patch(
   "/:appointmentId/cancel",
   auth,
-  testAppointmentController.cancelAppointment,
+  TestAppointmentController.cancelAppointment,
 );
 
 // تعديل موعد (إعادة جدولة للمتقدم طالما أنه Pending)
 router.patch(
   "/:appointmentId/reschedule",
   auth,
-  testAppointmentController.rescheduleAppointment,
+  TestAppointmentController.rescheduleAppointment,
 );
 
 module.exports = router;

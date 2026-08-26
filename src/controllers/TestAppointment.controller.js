@@ -403,4 +403,4 @@ class TestAppointmentController {
     });
   };
 }
-module.exports = new TestAppointment();
+module.exports = new TestAppointmentController();

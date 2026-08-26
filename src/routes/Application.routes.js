@@ -4,10 +4,14 @@ const ApplicationController = require("../controllers/Application.controller");
 const auth = require("../middlewares/auth");
 const asyncHandler = require("../utils/asyncHandler");
 const roleMiddleware = require("../middlewares/role");
-
+const {
+  createApplicationValidation,
+  applicationIdParamValidation,
+  updateStatusValidation,
+} = require("../validations/application.validator");
 router.post(
   "/",
-  [auth, roleMiddleware(["customer", "admin"])], // يمكنك تعديل الأدوار حسب رغبتك
+  [auth, roleMiddleware(["customer", "admin"]), createApplicationValidation], // يمكنك تعديل الأدوار حسب رغبتك
   asyncHandler(ApplicationController.createApplication),
 );
 
@@ -19,7 +23,11 @@ router.get(
 
 router.get(
   "/:applicationId",
-  [auth, roleMiddleware(["admin", "employee", "customer"])],
+  [
+    auth,
+    roleMiddleware(["admin", "employee", "customer"]),
+    applicationIdParamValidation,
+  ],
   asyncHandler(ApplicationController.getApplicationById),
 );
 router.post(
@@ -34,7 +42,7 @@ router.post(
 );
 router.put(
   "/:applicationId/status",
-  [auth, roleMiddleware(["admin", "employee"])],
+  [auth, roleMiddleware(["admin", "employee"]), updateStatusValidation],
   asyncHandler(ApplicationController.updateApplicationStatus),
 );
 
