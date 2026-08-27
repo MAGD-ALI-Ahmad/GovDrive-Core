@@ -147,7 +147,7 @@ class authContoller {
     const decoded = Jwt.verifyRefreshToken(refreshToken);
 
     const data = {
-      _id: decoded._id,
+      _id: decoded.id,
       email: decoded.email,
       role: decoded.role,
     };
