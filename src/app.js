@@ -59,6 +59,7 @@ app.use("/api/v1/uploads", require("./routes/uploads.route"));
 app.use("/api/v1/LicenseClasses", require("./routes/LicenseClass.routes"));
 app.use("/api/v1/Applications", require("./routes/Application.routes"));
 app.use("/api/v1/licenses", require("./routes/License.routes"));
+app.use("/api/v1/admin", require("./routes/Admin.routes"));
 app.use(
   "/api/v1/detained-licenses",
   require("./routes/DetainedLicense.routes"),
