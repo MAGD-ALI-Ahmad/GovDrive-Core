@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — GovDrive-Core</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>" />
+  <link rel="stylesheet" href="./css/global.css" />
+</head>
+<body>
+
+<div class="auth-layout" style="padding:4rem 1rem">
+  <!-- Glow orbs -->
+  <div class="glow-orb glow-orb-indigo" style="width:400px;height:400px;top:-100px;right:-80px;position:fixed"></div>
+  <div class="glow-orb glow-orb-cyan"   style="width:280px;height:280px;bottom:-60px;left:-60px;position:fixed"></div>
+
+  <div class="auth-card animate-fadeIn" style="max-width:520px">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div style="font-size:2.2rem;margin-bottom:0.5rem">🚗</div>
+      <div class="brand gradient-text">GovDrive-Core</div>
+      <p class="text-sm text-muted" style="margin-top:0.35rem">Citizen Registration</p>
+    </div>
+
+    <h1 style="font-size:1.4rem;font-weight:700;margin-bottom:0.25rem">Create Your Account</h1>
+    <p class="text-sm text-secondary" style="margin-bottom:1.75rem">Fill in your details to access the license portal</p>
+
+    <!-- ── Step indicator ──────────────────────────────── -->
+    <div class="steps" style="margin-bottom:2rem">
+      <div class="step-item active" id="step-indicator-1">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div class="step-circle">1</div>
+          <span class="step-label">Personal</span>
+        </div>
+      </div>
+      <div class="step-connector" id="step-conn-1"></div>
+      <div class="step-item" id="step-indicator-2">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div class="step-circle">2</div>
+          <span class="step-label">Contact</span>
+        </div>
+      </div>
+      <div class="step-connector" id="step-conn-2"></div>
+      <div class="step-item" id="step-indicator-3">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div class="step-circle">3</div>
+          <span class="step-label">Security</span>
+        </div>
+      </div>
+    </div>
+
+    <!--
+      CSP COMPLIANCE:
+        - novalidate  → disables browser-native validation (all done in JS)
+        - NO onclick / onsubmit / on* attributes anywhere in this file
+        - All button interactions are wired via addEventListener in register.js
+        - NO 'required' attributes on any input (would trigger native validation)
+    -->
+    <form id="register-form" novalidate autocomplete="off">
+
+      <!-- ══════════════════════════════════════════════
+           STEP 1 — Personal Info
+           ══════════════════════════════════════════════ -->
+      <div id="reg-step-1">
+
+        <div class="form-group">
+          <label class="form-label" for="fullName">
+            Full Name <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="text"
+            id="fullName"
+            name="fullName"
+            placeholder="Ahmed Mohamed Al-Rashid"
+            autocomplete="name"
+          />
+          <span class="form-error hidden" id="fullName-error" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="nationalNumber">
+            National ID Number <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="text"
+            id="nationalNumber"
+            name="nationalNumber"
+            placeholder="10012345678901"
+            autocomplete="off"
+          />
+          <span class="form-error hidden" id="nationalNumber-error" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label" for="birthDate">
+              Date of Birth <span style="color:var(--danger)" aria-hidden="true">*</span>
+            </label>
+            <input
+              class="form-input"
+              type="date"
+              id="birthDate"
+              name="birthDate"
+            />
+            <span class="form-error hidden" id="birthDate-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="nationality">Nationality</label>
+            <input
+              class="form-input"
+              type="text"
+              id="nationality"
+              name="nationality"
+              placeholder="Syrian"
+              value="Syrian"
+            />
+            <span class="form-error hidden" id="nationality-error" role="alert" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <!--
+          id="next-btn-1" — wired in register.js to advance to step 2.
+          type="button"   — prevents any accidental form submission.
+          NO onclick attr — CSP blocks script-src-attr; all handlers in JS.
+        -->
+        <button
+          type="button"
+          id="next-btn-1"
+          class="btn btn-primary w-full"
+          style="margin-top:0.5rem"
+        >
+          Continue → Contact Info
+        </button>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           STEP 2 — Contact Info
+           ══════════════════════════════════════════════ -->
+      <div id="reg-step-2" class="hidden">
+
+        <div class="form-group">
+          <label class="form-label" for="email">
+            Email Address <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+          />
+          <span class="form-error hidden" id="email-error" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">
+            Phone Number <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="+963 912 345 678"
+            autocomplete="tel"
+          />
+          <span class="form-error hidden" id="phone-error" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="address">
+            Home Address <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          <textarea
+            class="form-input form-textarea"
+            id="address"
+            name="address"
+            placeholder="Street, City, Region"
+            style="min-height:72px"
+          ></textarea>
+          <span class="form-error hidden" id="address-error" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="flex gap-2" style="margin-top:0.5rem">
+          <!-- id="prev-btn-2" → back to step 1 -->
+          <button type="button" id="prev-btn-2" class="btn btn-ghost" style="flex:1">
+            ← Back
+          </button>
+          <!-- id="next-btn-2" → advance to step 3 -->
+          <button type="button" id="next-btn-2" class="btn btn-primary" style="flex:2">
+            Continue → Security
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           STEP 3 — Password & Submit
+           ══════════════════════════════════════════════ -->
+      <div id="reg-step-3" class="hidden">
+
+        <div class="form-group">
+          <label class="form-label" for="password">
+            Password <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          <div style="position:relative">
+            <input
+              class="form-input"
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Min 8 chars · upper · lower · number · symbol"
+              autocomplete="new-password"
+              style="padding-right:3rem"
+            />
+            <!--
+              id="toggle-password" — wired in register.js.
+              NO onclick attr.
+            -->
+            <button
+              type="button"
+              id="toggle-password"
+              aria-label="Toggle password visibility"
+              style="
+                position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);
+                background:none;border:none;cursor:pointer;
+                font-size:1rem;color:var(--text-muted);
+                padding:0.25rem;border-radius:var(--radius-sm);
+                transition:color var(--ease-default)"
+            >👁️</button>
+          </div>
+          <span class="form-error hidden" id="password-error" role="alert" aria-live="polite"></span>
+
+          <!-- Password strength meter -->
+          <div style="margin-top:0.6rem" aria-hidden="true">
+            <div style="height:4px;background:var(--navy-700);border-radius:2px;overflow:hidden">
+              <div
+                id="password-strength"
+                style="height:100%;width:0;border-radius:2px;transition:width 0.3s ease,background 0.3s ease"
+              ></div>
+            </div>
+            <p id="strength-label" class="text-xs text-muted" style="margin-top:4px;min-height:1em"></p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirmPassword">
+            Confirm Password <span style="color:var(--danger)" aria-hidden="true">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Repeat your password"
+            autocomplete="new-password"
+          />
+          <span class="form-error hidden" id="confirmPassword-error" role="alert" aria-live="polite"></span>
+        </div>
+
+        <!-- Terms checkbox -->
+        <div class="flex items-center gap-2" style="margin-bottom:1.5rem">
+          <input
+            type="checkbox"
+            id="terms"
+            name="terms"
+            style="width:16px;height:16px;accent-color:var(--indigo-500);cursor:pointer;flex-shrink:0"
+          />
+          <label for="terms" class="text-sm text-secondary" style="cursor:pointer;line-height:1.5">
+            I agree to the
+            <a href="#" style="color:var(--indigo-400)">Terms of Service</a>
+            and
+            <a href="#" style="color:var(--indigo-400)">Privacy Policy</a>
+          </label>
+        </div>
+
+        <div class="flex gap-2">
+          <!-- id="prev-btn-3" → back to step 2 -->
+          <button type="button" id="prev-btn-3" class="btn btn-ghost" style="flex:1">
+            ← Back
+          </button>
+          <!--
+            id="register-btn"  — wired in register.js as submit trigger.
+            type="submit"      — fires the form's submit event (also handled in JS).
+          -->
+          <button type="submit" id="register-btn" class="btn btn-primary" style="flex:2">
+            Create Account
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="auth-divider">already have an account?</div>
+    <a href="./login.html" class="btn btn-outline w-full">Sign In Instead</a>
+
+    <div class="text-center" style="margin-top:1.25rem">
+      <a href="./index.html" class="text-sm text-secondary">← Back to GovDrive Home</a>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!--
+  Script load order is critical:
+    1. api.js   — defines window.api (fetch client)
+    2. register.js — attaches all event listeners via addEventListener
+  No inline scripts. No onclick/on* attributes anywhere.
+-->
+<script src="./js/api.js"></script>
+<script src="./js/register.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — GovDrive-Core</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>" />
+  <link rel="stylesheet" href="./css/global.css" />
+</head>
+<body>
+
+<div class="auth-layout">
+  <!-- Glow orbs -->
+  <div class="glow-orb glow-orb-indigo" style="width:400px;height:400px;top:-100px;left:-100px;position:fixed"></div>
+  <div class="glow-orb glow-orb-cyan"   style="width:300px;height:300px;bottom:-80px;right:-60px;position:fixed"></div>
+
+  <div class="auth-card animate-fadeIn">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div style="font-size:2.5rem;margin-bottom:0.5rem">🚗</div>
+      <div class="brand gradient-text">GovDrive-Core</div>
+      <p class="text-sm text-muted" style="margin-top:0.35rem">Government License Portal</p>
+    </div>
+
+    <!-- Heading -->
+    <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:0.35rem">Welcome back</h1>
+    <p class="text-sm text-secondary" style="margin-bottom:1.75rem">Sign in to access your citizen portal</p>
+
+    <!-- Form -->
+    <form id="login-form" novalidate>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input
+          class="form-input"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required />
+        <span class="form-error hidden" id="email-error" aria-live="polite"></span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">
+          Password
+          <a href="#" style="float:right;font-size:0.75rem;color:var(--indigo-400);font-weight:500">Forgot password?</a>
+        </label>
+        <div style="position:relative">
+          <input
+            class="form-input"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+            style="padding-right:3rem" />
+          <button type="button" id="toggle-password" aria-label="Toggle password visibility"
+            style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);
+              background:none;border:none;cursor:pointer;font-size:1rem;color:var(--text-muted)">
+            👁️
+          </button>
+        </div>
+        <span class="form-error hidden" id="password-error" aria-live="polite"></span>
+      </div>
+
+      <!-- Remember me -->
+      <div class="flex items-center gap-2" style="margin-bottom:1.5rem">
+        <input type="checkbox" id="remember" name="remember"
+          style="width:16px;height:16px;accent-color:var(--indigo-500);cursor:pointer" />
+        <label for="remember" class="text-sm text-secondary" style="cursor:pointer">Keep me signed in</label>
+      </div>
+
+      <button type="submit" id="login-btn" class="btn btn-primary w-full btn-lg">
+        Sign In
+      </button>
+
+    </form>
+
+    <div class="auth-divider">or</div>
+
+    <a href="./register.html" class="btn btn-outline w-full">
+      Create a New Account
+    </a>
+
+    <p class="text-xs text-muted text-center" style="margin-top:1.5rem;line-height:1.6">
+      By signing in you agree to our
+      <a href="#" style="color:var(--indigo-400)">Terms of Service</a> and
+      <a href="#" style="color:var(--indigo-400)">Privacy Policy</a>.
+    </p>
+
+    <!-- Back to homepage -->
+    <div class="text-center" style="margin-top:1.25rem">
+      <a href="./index.html" class="text-sm text-secondary" style="display:inline-flex;align-items:center;gap:0.35rem">
+        ← Back to GovDrive Home
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script src="./js/api.js"></script>
+<script src="./js/auth.js"></script>
+</body>
+</html>

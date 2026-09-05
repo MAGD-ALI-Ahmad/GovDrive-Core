@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — GovDrive-Core</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>" />
+  <link rel="stylesheet" href="./css/global.css" />
+</head>
+<body>
+
+<!-- ── Page Loader ─────────────────────────────────────────── -->
+<div id="page-loader" class="page-loader">
+  <div class="spinner"></div>
+  <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.5rem">Loading Admin Panel…</p>
+</div>
+
+<!-- ── Navbar ──────────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="flex items-center gap-3">
+    <button id="sidebar-toggle" class="btn btn-ghost btn-icon" aria-label="Toggle sidebar">☰</button>
+    <a href="./index.html" class="navbar-brand">
+      <span>⚙️</span> GovDrive Admin
+    </a>
+  </div>
+  <div class="flex items-center gap-3">
+    <div style="text-align:right">
+      <p class="text-sm" style="color:var(--indigo-300);font-weight:600" id="admin-name">—</p>
+      <p class="text-xs text-muted" id="admin-role">—</p>
+    </div>
+    <div style="
+      width:36px;height:36px;border-radius:50%;
+      background:linear-gradient(135deg,var(--indigo-500),var(--cyan-500));
+      display:flex;align-items:center;justify-content:center;
+      font-size:0.9rem;font-weight:700;color:#fff">
+      A
+    </div>
+    <button id="logout-btn" class="btn btn-ghost btn-sm">
+      🚪 Sign Out
+    </button>
+  </div>
+</nav>
+
+<!-- ── Sidebar ─────────────────────────────────────────────── -->
+<aside id="sidebar" class="sidebar" aria-label="Admin navigation">
+  <div style="padding:1rem;border-bottom:1px solid var(--glass-border)">
+    <div class="badge badge-active" style="font-size:0.7rem;margin-bottom:0.5rem">● God-Mode Active</div>
+    <p class="text-xs text-muted">GovDrive-Core Control Panel</p>
+  </div>
+
+  <nav class="sidebar-nav" role="navigation">
+    <button class="sidebar-item active" data-section="section-stats" aria-current="page">
+      <span class="icon">📊</span> Dashboard Stats
+    </button>
+    <button class="sidebar-item" data-section="section-applications">
+      <span class="icon">📋</span> Applications
+    </button>
+    <button class="sidebar-item" data-section="section-payments">
+      <span class="icon">💳</span> Payment Verification
+    </button>
+    <button class="sidebar-item" data-section="section-appointments">
+      <span class="icon">📅</span> Test Appointments
+    </button>
+    <button class="sidebar-item" data-section="section-licenses">
+      <span class="icon">🪪</span> Licenses
+    </button>
+  </nav>
+
+  <div style="padding:1rem;border-top:1px solid var(--glass-border)">
+    <a href="./dashboard.html" class="btn btn-ghost w-full btn-sm" style="margin-bottom:0.5rem;color:var(--indigo-400)">
+      👤 Citizen Portal
+    </a>
+    <button id="sidebar-logout" class="btn btn-ghost w-full btn-sm" style="color:var(--danger);border-color:rgba(239,68,68,0.2)">
+      🚪 Sign Out
+    </button>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════════ -->
+<main class="main-with-sidebar" style="padding:2rem 1.5rem">
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION: Dashboard Stats
+       ══════════════════════════════════════════════════════ -->
+  <section id="section-stats" class="admin-section animate-fadeIn">
+    <div class="flex items-center justify-between" style="margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h1 style="font-size:1.5rem;font-weight:700">Dashboard Overview</h1>
+        <p class="text-sm text-secondary">
+          Live stats · Last updated: <span id="stats-last-updated">—</span>
+        </p>
+      </div>
+      <button id="refresh-stats-btn" class="btn btn-outline btn-sm">
+        ↻ Refresh Stats
+      </button>
+    </div>
+
+    <!-- Row 1: Core KPIs -->
+    <div class="grid-4" style="margin-bottom:1.5rem">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value gradient-text" id="stat-total-users">—</div>
+        <div class="stat-label">Total Citizens</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value" style="color:var(--warning)" id="stat-apps-pending">—</div>
+        <div class="stat-label">Pending Applications</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" style="color:var(--success)" id="stat-apps-approved">—</div>
+        <div class="stat-label">Approved Applications</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏁</div>
+        <div class="stat-value" style="color:var(--indigo-400)" id="stat-apps-completed">—</div>
+        <div class="stat-label">Completed Licenses</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Financial + Appointments -->
+    <div class="grid-3" style="margin-bottom:2rem">
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value" style="color:var(--warning)" id="stat-pay-pending">—</div>
+        <div class="stat-label">Pending Payments</div>
+      </div>
+      <div class="stat-card" style="background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(34,211,238,0.06));border-color:rgba(99,102,241,0.3)">
+        <div class="stat-icon" style="background:linear-gradient(135deg,rgba(34,211,238,0.2),rgba(99,102,241,0.1))">💎</div>
+        <div class="stat-value gradient-text" id="stat-revenue">—</div>
+        <div class="stat-label">Total Revenue Verified</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-value" style="color:var(--cyan-400)" id="stat-appts-pending">—</div>
+        <div class="stat-label">Pending Appointments</div>
+      </div>
+    </div>
+
+    <!-- Quick action shortcut cards -->
+    <h2 style="font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--text-secondary)">
+      Quick Actions
+    </h2>
+    <div class="grid-3">
+      <button class="glass p-5 text-center sidebar-item" data-section="section-applications"
+        style="display:block;border-radius:var(--radius-lg);cursor:pointer">
+        <div style="font-size:1.75rem;margin-bottom:0.5rem">📋</div>
+        <p style="font-weight:600">Review Applications</p>
+        <p class="text-xs text-muted">Approve or cancel</p>
+      </button>
+      <button class="glass p-5 text-center sidebar-item" data-section="section-payments"
+        style="display:block;border-radius:var(--radius-lg);cursor:pointer">
+        <div style="font-size:1.75rem;margin-bottom:0.5rem">💳</div>
+        <p style="font-weight:600">Verify Payments</p>
+        <p class="text-xs text-muted">One-click verification</p>
+      </button>
+      <button class="glass p-5 text-center sidebar-item" data-section="section-appointments"
+        style="display:block;border-radius:var(--radius-lg);cursor:pointer">
+        <div style="font-size:1.75rem;margin-bottom:0.5rem">📝</div>
+        <p style="font-weight:600">Log Test Results</p>
+        <p class="text-xs text-muted">Pass / Fail recording</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION: Applications Management
+       ══════════════════════════════════════════════════════ -->
+  <section id="section-applications" class="admin-section hidden animate-fadeIn">
+    <div class="flex items-center justify-between" style="margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h1 style="font-size:1.5rem;font-weight:700">Applications Management</h1>
+        <p class="text-sm text-secondary">Review, approve, or cancel citizen applications</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-muted" for="filter-apps">Filter:</label>
+        <select class="form-select" id="filter-apps" style="width:auto;padding:0.4rem 0.8rem">
+          <option value="">All Statuses</option>
+          <option value="New">New</option>
+          <option value="Approved">Approved</option>
+          <option value="Completed">Completed</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" onclick="loadAllApplications()">↻ Reload</button>
+      </div>
+    </div>
+
+    <div class="glass" style="overflow:hidden">
+      <div class="table-wrap">
+        <table role="table" aria-label="All applications">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Applicant</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Fees</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="all-apps-tbody"></tbody>
+        </table>
+      </div>
+      <div id="all-apps-loader" class="empty-state hidden">
+        <div class="spinner"></div>
+        <p class="text-sm text-secondary">Loading applications…</p>
+      </div>
+      <div id="all-apps-empty" class="empty-state hidden">
+        <div class="icon">📋</div>
+        <p style="font-weight:600">No applications found</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION: Payment Verification
+       ══════════════════════════════════════════════════════ -->
+  <section id="section-payments" class="admin-section hidden animate-fadeIn">
+    <div class="flex items-center justify-between" style="margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h1 style="font-size:1.5rem;font-weight:700">Payment Verification</h1>
+        <p class="text-sm text-secondary">Verify or reject citizen payment submissions</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-muted" for="filter-payments">Filter:</label>
+        <select class="form-select" id="filter-payments" style="width:auto;padding:0.4rem 0.8rem">
+          <option value="">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Verified">Verified</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" onclick="loadAllPayments()">↻ Reload</button>
+      </div>
+    </div>
+
+    <div class="glass" style="overflow:hidden">
+      <div class="table-wrap">
+        <table role="table" aria-label="All payments">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Citizen</th>
+              <th>App ID</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="all-payments-tbody"></tbody>
+        </table>
+      </div>
+      <div id="all-payments-loader" class="empty-state hidden">
+        <div class="spinner"></div>
+        <p class="text-sm text-secondary">Loading payments…</p>
+      </div>
+      <div id="all-payments-empty" class="empty-state hidden">
+        <div class="icon">💳</div>
+        <p style="font-weight:600">No payments found</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION: Test Appointments
+       ══════════════════════════════════════════════════════ -->
+  <section id="section-appointments" class="admin-section hidden animate-fadeIn">
+    <div class="flex items-center justify-between" style="margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h1 style="font-size:1.5rem;font-weight:700">Test Appointments</h1>
+        <p class="text-sm text-secondary">Confirm appointments and log Vision / Written / Practical results</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-muted" for="filter-appts">Filter:</label>
+        <select class="form-select" id="filter-appts" style="width:auto;padding:0.4rem 0.8rem">
+          <option value="">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Confirmed">Confirmed</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" onclick="loadAllAppointments()">↻ Reload</button>
+      </div>
+    </div>
+
+    <div class="glass" style="overflow:hidden">
+      <div class="table-wrap">
+        <table role="table" aria-label="All appointments">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Applicant</th>
+              <th>Test Type</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Result</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="all-appts-tbody"></tbody>
+        </table>
+      </div>
+      <div id="all-appts-loader" class="empty-state hidden">
+        <div class="spinner"></div>
+        <p class="text-sm text-secondary">Loading appointments…</p>
+      </div>
+      <div id="all-appts-empty" class="empty-state hidden">
+        <div class="icon">📅</div>
+        <p style="font-weight:600">No appointments found</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION: Licenses
+       ══════════════════════════════════════════════════════ -->
+  <section id="section-licenses" class="admin-section hidden animate-fadeIn">
+    <div class="flex items-center justify-between" style="margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <h1 style="font-size:1.5rem;font-weight:700">License Registry</h1>
+        <p class="text-sm text-secondary">View, suspend, or restore all issued licenses</p>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="loadAllLicenses()">↻ Reload</button>
+    </div>
+
+    <div class="glass" style="overflow:hidden">
+      <div class="table-wrap">
+        <table role="table" aria-label="All licenses">
+          <thead>
+            <tr>
+              <th>License ID</th>
+              <th>Holder</th>
+              <th>Class</th>
+              <th>Issued</th>
+              <th>Expires</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="all-licenses-tbody"></tbody>
+        </table>
+      </div>
+      <div id="all-licenses-loader" class="empty-state hidden">
+        <div class="spinner"></div>
+        <p class="text-sm text-secondary">Loading licenses…</p>
+      </div>
+      <div id="all-licenses-empty" class="empty-state hidden">
+        <div class="icon">🪪</div>
+        <p style="font-weight:600">No licenses found</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODALS
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- ═══════════════════════════════════════════════════════
+     Modal: Universal Status Change
+     Works for both Applications and Payments.
+     Populated dynamically by openStatusModal() in admin.js.
+     ═══════════════════════════════════════════════════════ -->
+<div id="modal-status-change" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="status-modal-title">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="status-modal-title">⚙ Change Status</h2>
+      <button class="modal-close" data-close-modal="modal-status-change" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Entity info -->
+    <div style="background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.2);
+      border-radius:var(--radius-md);padding:0.9rem 1rem;margin-bottom:1.25rem">
+      <p class="text-xs text-muted" style="margin-bottom:0.3rem">Editing record</p>
+      <p id="status-modal-entity-label" style="font-weight:600;font-size:0.9rem;margin-bottom:0.4rem">—</p>
+      <div id="status-modal-current" class="text-sm"></div>
+    </div>
+
+    <!-- Status option grid — filled by JS -->
+    <p class="form-label" style="margin-bottom:0.65rem">Select new status:</p>
+    <div id="status-modal-options" style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem;margin-bottom:1.5rem"></div>
+
+    <!-- Hidden state fields -->
+    <input type="hidden" id="status-modal-type" />
+    <input type="hidden" id="status-modal-id" />
+    <input type="hidden" id="status-modal-selected" />
+
+    <div class="flex gap-2">
+      <button type="button" class="btn btn-ghost" style="flex:1" data-close-modal="modal-status-change">Cancel</button>
+      <button type="button" id="status-modal-confirm-btn" class="btn btn-primary" style="flex:2">
+        ✓ Apply Change
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Log Test Result -->
+<div id="modal-test-result" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-result-title">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-result-title">📝 Log Test Result</h2>
+      <button class="modal-close" data-close-modal="modal-test-result" aria-label="Close">✕</button>
+    </div>
+
+    <form id="test-result-form" novalidate>
+      <input type="hidden" id="result-appt-id" />
+
+      <div class="form-group">
+        <label class="form-label">Test Result <span style="color:var(--danger)">*</span></label>
+        <div class="flex gap-3" style="margin-top:0.5rem">
+          <div style="flex:1">
+            <div id="result-pass-card" onclick="selectResult('Pass')" style="
+              padding:1.25rem;border-radius:var(--radius-md);text-align:center;
+              border:2px solid var(--glass-border);
+              background:rgba(16,185,129,0.05);
+              cursor:pointer;transition:all var(--ease-default)">
+              <div style="font-size:2rem">✅</div>
+              <p style="font-weight:700;color:var(--success);margin-top:0.5rem">PASS</p>
+            </div>
+          </div>
+          <div style="flex:1">
+            <div id="result-fail-card" onclick="selectResult('Fail')" style="
+              padding:1.25rem;border-radius:var(--radius-md);text-align:center;
+              border:2px solid var(--glass-border);
+              background:rgba(239,68,68,0.05);
+              cursor:pointer;transition:all var(--ease-default)">
+              <div style="font-size:2rem">❌</div>
+              <p style="font-weight:700;color:var(--danger);margin-top:0.5rem">FAIL</p>
+            </div>
+          </div>
+        </div>
+        <!-- Single hidden input — the ONLY element with id="result-value" -->
+        <input type="hidden" id="result-value" name="result-value" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="result-notes">Examiner Notes <span style="color:var(--text-muted)">(optional)</span></label>
+        <textarea class="form-input form-textarea" id="result-notes" name="result-notes"
+          placeholder="Any notes about the test session…"></textarea>
+      </div>
+
+      <div class="flex gap-2" style="margin-top:1.5rem">
+        <button type="button" class="btn btn-ghost" style="flex:1" data-close-modal="modal-test-result">Cancel</button>
+        <button type="submit" id="submit-result-btn" class="btn btn-primary" style="flex:2">Submit Result</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ── Scripts ─────────────────────────────────────────────── -->
+<script src="./js/api.js"></script>
+<script src="./js/admin.js"></script>
+
+<script>
+/* ── Dynamic navbar scroll behaviour ───────────────────── */
+(function () {
+  const navbar    = document.querySelector('.navbar');
+  if (!navbar) return;
+  const THRESHOLD = 5; // smaller threshold for app pages
+  let ticking     = false;
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        navbar.classList.toggle('navbar-scrolled', window.scrollY > THRESHOLD);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+/* ── Result card selection UI ───────────────────────────── */
+function selectResult(val) {
+  document.getElementById('result-value').value = val;
+  const passCard = document.getElementById('result-pass-card');
+  const failCard = document.getElementById('result-fail-card');
+  if (val === 'Pass') {
+    passCard.style.borderColor = 'var(--success)';
+    passCard.style.background  = 'rgba(16,185,129,0.15)';
+    passCard.style.boxShadow   = '0 0 16px rgba(16,185,129,0.25)';
+    failCard.style.borderColor = 'var(--glass-border)';
+    failCard.style.background  = 'rgba(239,68,68,0.05)';
+    failCard.style.boxShadow   = 'none';
+  } else {
+    failCard.style.borderColor = 'var(--danger)';
+    failCard.style.background  = 'rgba(239,68,68,0.15)';
+    failCard.style.boxShadow   = '0 0 16px rgba(239,68,68,0.25)';
+    passCard.style.borderColor = 'var(--glass-border)';
+    passCard.style.background  = 'rgba(16,185,129,0.05)';
+    passCard.style.boxShadow   = 'none';
+  }
+}
+</script>
+
+</body>
+</html>

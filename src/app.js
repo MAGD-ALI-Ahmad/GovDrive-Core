@@ -24,27 +24,24 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "https://cdnjs.cloudflare.com",
-        ],
-        styleSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "https://fonts.googleapis.com",
-          "https://cdnjs.cloudflare.com",
-        ],
-        fontSrc: [
-          "'self'",
-          "https://fonts.gstatic.com",
-          "https://cdnjs.cloudflare.com",
-        ],
-        imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
-        connectSrc: ["'self'"],
+        defaultSrc:    ["'self'"],
+        // 'unsafe-inline' covers inline <script> blocks and nonces;
+        // it does NOT cover onclick=/on* attrs — that is scriptSrcAttr.
+        scriptSrc:     ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+        // Explicitly block inline event-handler attributes (onclick, onsubmit, etc.)
+        // across the entire app. All event wiring uses addEventListener in .js files.
+        scriptSrcAttr: ["'none'"],
+        styleSrc:      ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+        fontSrc:       ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+        imgSrc:        ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
+        connectSrc:    ["'self'"],
+        workerSrc:     ["'self'", "blob:"],
+        objectSrc:     ["'none'"],
+        upgradeInsecureRequests: [],
       },
     },
+    // Allow Three.js canvas rendering
+    crossOriginEmbedderPolicy: false,
   }),
 );
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
@@ -54,19 +51,18 @@ app.get("/api/v1/health", (_req, res) =>
     .status(200)
     .json({ success: true, message: "MAGD MARKET API is healthy ✅" }),
 );
-app.use("/api/v1/auth", require("./routes/auth.routes"));
-app.use("/api/v1/uploads", require("./routes/uploads.route"));
-app.use("/api/v1/LicenseClasses", require("./routes/LicenseClass.routes"));
-app.use("/api/v1/Applications", require("./routes/Application.routes"));
-app.use("/api/v1/licenses", require("./routes/License.routes"));
-app.use("/api/v1/admin", require("./routes/Admin.routes"));
-app.use(
-  "/api/v1/detained-licenses",
-  require("./routes/DetainedLicense.routes"),
-);
+app.use("/api/v1/auth",              require("./routes/auth.routes"));
+app.use("/api/v1/uploads",           require("./routes/uploads.route"));
+app.use("/api/v1/LicenseClasses",    require("./routes/LicenseClass.routes"));
+app.use("/api/v1/Applications",      require("./routes/Application.routes"));
+app.use("/api/v1/licenses",          require("./routes/License.routes"));
+app.use("/api/v1/payments",          require("./routes/Payment.routes"));
+app.use("/api/v1/TestAppointments",  require("./routes/TestAppoiments.routes"));
+app.use("/api/v1/admin",             require("./routes/Admin.routes"));
+app.use("/api/v1/detained-licenses", require("./routes/DetainedLicense.routes"));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("*", (req, res) => {
+app.get(/^(?!\/api\/).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 app.use(notFoundHandler);
